@@ -55,5 +55,5 @@ jobs:
         NODE_OPTIONS="--max-old-space-size=4096" yarn android-build
     - uses: actions/upload-artifact@v3
       with:
-        name: ztm-app-v${{ vars.APP_VERSION }}-android
-        path: ./app/src-tauri/gen/android/app/build/outputs/apk/universal/release/ztm-app-v${{ vars.APP_VERSION }}-android.apk
+        name: story-app-v${{ vars.APP_VERSION }}-android
+        path: ./app/src-tauri/gen/android/app/build/outputs/apk/universal/release/story-app-v${{ vars.APP_VERSION }}-android.apk
