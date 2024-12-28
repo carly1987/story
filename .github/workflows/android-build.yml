@@ -53,7 +53,7 @@ jobs:
         export NDK_HOME="$ANDROID_HOME/ndk/$(ls -d $ANDROID_HOME/ndk/* | sort -V | tail -n 1 | xargs basename)"
         yarn android-init
         NODE_OPTIONS="--max-old-space-size=4096" yarn android-build
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: app-universal-release-unsigned
         path: /home/runner/work/story/story/app/src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release-unsigned.apk
