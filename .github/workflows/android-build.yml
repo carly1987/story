@@ -52,7 +52,6 @@ jobs:
         export ANDROID_HOME='/usr/local/lib/android/sdk'
         export NDK_HOME="$ANDROID_HOME/ndk/$(ls -d $ANDROID_HOME/ndk/* | sort -V | tail -n 1 | xargs basename)"
         yarn android-init
-        cp -f ./src-android/app/src/main/assets/libc++_shared.so  ./src-tauri/bin/cli-aarch64-apple-darwin
         NODE_OPTIONS="--max-old-space-size=4096" yarn android-build
     - name: Align apk
       run: |
@@ -86,10 +85,3 @@ jobs:
       with:
         name: ztm-app-v${{ vars.APP_VERSION }}-android
         path: ./app/src-tauri/gen/android/app/build/outputs/apk/universal/release/ztm-app-v${{ vars.APP_VERSION }}-android.apk
-    
-    - uses: actions/upload-artifact@v3
-      with:
-        name: ztm-lib-v${{ vars.APP_VERSION }}-android
-        path: |
-          ./app/src-android/app/src/main/assets/libc++_shared.so
-          ./app/src-android/app/src/main/assets/libztm.so
