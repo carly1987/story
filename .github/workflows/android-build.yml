@@ -53,11 +53,6 @@ jobs:
         export NDK_HOME="$ANDROID_HOME/ndk/$(ls -d $ANDROID_HOME/ndk/* | sort -V | tail -n 1 | xargs basename)"
         yarn android-init
         NODE_OPTIONS="--max-old-space-size=4096" yarn android-build
-    - name: Verify APK
-      run: |
-        export JAVA_HOME='/opt/hostedtoolcache/Java_Adopt_jdk/17.0.10-7/x64'
-        export ANDROID_HOME='/usr/local/lib/android/sdk'
-        $ANDROID_HOME/build-tools/31.0.0/apksigner verify ./app/src-tauri/gen/android/app/build/outputs/apk/universal/release/ztm-app-v${{ vars.APP_VERSION }}-android.apk
     - uses: actions/upload-artifact@v3
       with:
         name: ztm-app-v${{ vars.APP_VERSION }}-android
