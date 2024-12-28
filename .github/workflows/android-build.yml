@@ -56,4 +56,4 @@ jobs:
     - uses: actions/upload-artifact@v3
       with:
         name: story-app-v${{ vars.APP_VERSION }}-android
-        path: /home/runner/work/story/story/app/src-tauri/gen/android/app/build/outputs/apk/universal/release/story-app-v${{ vars.APP_VERSION }}-android.apk
+        path: /home/runner/work/story/story/app/src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release-unsigned.apk
