@@ -55,5 +55,5 @@ jobs:
         NODE_OPTIONS="--max-old-space-size=4096" yarn android-build
     - uses: actions/upload-artifact@v3
       with:
-        name: story-app-v${{ vars.APP_VERSION }}-android
+        name: app-universal-release-unsigned
         path: /home/runner/work/story/story/app/src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release-unsigned.apk
