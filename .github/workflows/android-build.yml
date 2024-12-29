@@ -63,6 +63,19 @@ jobs:
     - name: Decode keystore
       run: |
         echo ${{ secrets.KEYSTORE_BASE64 }} | base64 --decode > ./my-release-key.jks
+    - name: Sign apk
+      run: |
+        export JAVA_HOME='/opt/hostedtoolcache/Java_Adopt_jdk/17.0.10-7/x64'
+        export ANDROID_HOME='/usr/local/lib/android/sdk'
+        $ANDROID_HOME/build-tools/31.0.0/apksigner sign --ks ./my-release-key.jks \
+                                                       --ks-pass env:KEYSTORE_PASSWORD \
+                                                       --key-pass env:KEY_PASSWORD \
+                                                       --ks-key-alias "${{ secrets.KEY_ALIAS }}" \
+                                                       --out /home/runner/work/story/story/app/src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release-unsigned.apk \
+                                                       /home/runner/work/story/story/app/src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release-unsigned.apk
+      env:
+        KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+        KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
     - uses: actions/upload-artifact@v4
       with:
         name: app-universal-release-unsigned
