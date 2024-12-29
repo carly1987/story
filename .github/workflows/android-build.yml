@@ -60,6 +60,9 @@ jobs:
         ls $ANDROID_HOME
         ls $ANDROID_HOME/build-tools
         $ANDROID_HOME/build-tools/31.0.0/zipalign -v 4 /home/runner/work/story/story/app/src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release-unsigned.apk /home/runner/work/story/story/app/src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release-unsigned-aligned.apk
+    - name: Decode keystore
+      run: |
+        echo ${{ secrets.KEYSTORE_BASE64 }} | base64 --decode > ./my-release-key.jks
     - uses: actions/upload-artifact@v4
       with:
         name: app-universal-release-unsigned
