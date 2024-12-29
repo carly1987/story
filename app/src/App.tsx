@@ -1,15 +1,31 @@
 import { useState } from "react";
 import reactLogo from "./assets/react.svg";
 import { invoke } from "@tauri-apps/api/core";
+import { WebviewWindow } from '@tauri-apps/api/webviewWindow';
 import "./App.css";
 
 function App() {
   const [greetMsg, setGreetMsg] = useState("");
-  const [name, setName] = useState("");
+  const [url, setUrl] = useState("");
 
   async function greet() {
-    // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-    setGreetMsg(await invoke("greet", { name }));
+    const name = url.replace(/.*\/\//,"").split("/")[0]?.replaceAll(".","_").replaceAll("-","_");
+    const options = {
+			url: url,
+			proxyUrl: '',
+			title: name,
+			width: 960
+		};
+    console.log('url', url)
+    const webview = new WebviewWindow(`${name}-webview`, options);
+    webview.once('tauri://created', function (d) {
+      console.log('WebviewWindow://created')
+      console.log(options)
+    });
+    webview.once('tauri://error', function (e) {
+      console.log('WebviewWindow://error')
+      console.log(e)
+    });
   }
 
   return (
@@ -38,7 +54,7 @@ function App() {
       >
         <input
           id="greet-input"
-          onChange={(e) => setName(e.currentTarget.value)}
+          onChange={(e) => setUrl(e.currentTarget.value)}
           placeholder="Enter a name..."
         />
         <button type="submit">Greet</button>

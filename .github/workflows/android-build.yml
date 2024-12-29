@@ -53,6 +53,13 @@ jobs:
         export NDK_HOME="$ANDROID_HOME/ndk/$(ls -d $ANDROID_HOME/ndk/* | sort -V | tail -n 1 | xargs basename)"
         yarn android-init
         NODE_OPTIONS="--max-old-space-size=4096" yarn android-build
+    - name: Align apk
+      run: |
+        export JAVA_HOME='/opt/hostedtoolcache/Java_Adopt_jdk/17.0.10-7/x64'
+        export ANDROID_HOME='/usr/local/lib/android/sdk'
+        ls $ANDROID_HOME
+        ls $ANDROID_HOME/build-tools
+        $ANDROID_HOME/build-tools/31.0.0/zipalign -v 4 /home/runner/work/story/story/app/src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release-unsigned.apk /home/runner/work/story/story/app/src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release-unsigned-aligned.apk
     - uses: actions/upload-artifact@v4
       with:
         name: app-universal-release-unsigned
