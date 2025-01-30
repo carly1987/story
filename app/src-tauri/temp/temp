@@ -1,0 +1,184 @@
+mod db;
+mod story;
+mod chapter;
+mod content;
+mod sqliteDB;
+extern crate regex;
+use sqliteDB;
+use db::connect;
+use story::Story;
+use chapter::Chapter;
+use content::Content;
+use serde::{Deserialize, Serialize};
+use serde_json::{Value};
+extern crate chrono;
+
+
+
+#[derive(Debug, Default, Clone, Serialize, Deserialize)]
+struct Stage {
+    id: i32,
+    label: String,
+}
+
+
+fn addStage(label: String) {
+    let mut client = connect().expect("no data");
+    match client.execute(
+        "INSERT INTO stage (label) VALUES ($1)",
+        &[&label],
+    ) {
+        Ok(_) => {
+            
+        },
+        Err(ref error) => {
+            
+        },
+    }
+}
+
+#[tauri::command]
+fn createStage(label: String) {
+    let mut client = connect().expect("no data");
+    let query = format!("SELECT * FROM stage WHERE label = '{}'", label);
+    println!("createChapter sql: {:?}", query);
+    match client.execute(&query, &[]) {
+        Ok(res) => {
+            if res < 1 {
+                addStage(label);
+            }
+        },
+        Err(_) => {
+            addStage(label);
+        }, 
+    }
+}
+
+#[tauri::command]
+fn getAllStage() -> Vec<Stage> {
+    let mut client = connect().expect("no data");
+    let mut result = Vec::new();
+    match client.query(
+        "SELECT * FROM stage",
+        &[],
+    ) {
+        Ok(res) => {
+            for row in res {
+                result.push(Stage{
+                    id: row.get("id"),
+                    label: row.get("label"),
+                });
+            }
+            
+        },
+        Err(error) => {
+            // 处理错误的情况
+            println!("<<<<<<<<<<<Error: getAllStory {:?}", error);
+            // 可以选择在这里返回错误、退出程序或其他错误处理策略
+        },
+    }
+    result
+}
+
+
+
+#[tauri::command]
+fn getAllChapterByStory(id: i32) -> Vec<Chapter> {
+    chapter::getAllChapterByStory(id)
+}
+
+#[tauri::command]
+fn getAllContentByChapterAndStory(chapter: i32, story: i32) -> Vec<Content> {
+    content::getAllContentByChapterAndStory(chapter, story)
+}
+
+#[tauri::command]
+fn updateContentChapter(line: i32, chapter: i32) {
+    content::updateContentChapter(line, chapter)
+}
+
+#[tauri::command]
+fn updateContent(id: String, text: String) {
+    content::updateContent(id, text);
+}
+
+#[tauri::command]
+fn addStory(name: &str) -> i32 {
+    story::addStory(name)
+}
+
+#[tauri::command]
+fn addChapter(name: &str, story: i32) -> i32 {
+    println!("addChapter: {:?}", &story);
+    // let idInt: i32 = story.parse().unwrap();
+    chapter::addChapter(name, story)
+}
+
+#[tauri::command]
+fn getAllStory() -> Vec<Story> {
+    story::getAllStory()
+}
+
+#[tauri::command]
+fn uploadTxt(path: String) {
+    story::uploadTxt(path);
+}
+
+#[tauri::command]
+fn createContentByEdit(content: String, story: i32, chapter: i32) -> i32 {
+    content::createContent(&content, story, chapter)
+}
+
+#[tauri::command]
+fn updateContentByEdit(id: String, text: String) {
+    content::updateContent(id, text);
+}
+
+#[tauri::command]
+fn deleteContent(id: i32) {
+    content::deleteContent(id);
+}
+
+#[tauri::command]
+fn executeSql(sql:String) {
+    println!("executeContent: {:?}", sql);
+    let mut client = connect().expect("no data");
+    match client.execute(&sql, &[]) {
+        Ok(res) => {
+            // 处理错误的情况
+            println!("<<<<<<<<<<<Success: executeContent {:?}", res);
+            // 可以选择在这里返回错误、退出程序或其他错误处理策略
+        },
+        Err(error) => {
+            // 处理错误的情况
+            println!("<<<<<<<<<<<Error: executeContent {:?}", error);
+            // 可以选择在这里返回错误、退出程序或其他错误处理策略
+        },
+    }
+}
+
+#[cfg_attr(mobile, tauri::mobile_entry_point)]
+pub fn run() {
+    tauri::Builder::default()
+        .plugin(tauri_plugin_clipboard_manager::init())
+        .plugin(tauri_plugin_shell::init())
+        .plugin(tauri_plugin_dialog::init())
+        .plugin(tauri_plugin_fs::init())
+        .invoke_handler(tauri::generate_handler![
+            addChapter,
+            addStory,
+            getAllStory,
+            getAllChapterByStory,
+            getAllContentByChapterAndStory,
+            updateContentChapter,
+            getAllStage,
+            uploadTxt,
+            createStage,
+            executeSql,
+            createContentByEdit,
+            updateContentByEdit,
+            deleteContent
+        ])
+        .run(tauri::generate_context!())
+        .expect("error while running tauri application");
+}
