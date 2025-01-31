@@ -1,9 +1,51 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App";
+import {
+  createBrowserRouter,
+  RouterProvider,
+} from "react-router-dom";
+import WellcomePage from './wellcome';
+import StoryPage from './story';
+import WriterPage from './write';
+import TestPage from './test';
+import RolePage from './role';
+import Layout from './layout';
+import '@fontsource/roboto/300.css';
+import './App.css';
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Layout />,
+    children: [
+      {
+        index: true,
+        Component: WellcomePage,
+      },
+      {
+        path: "/story",
+        Component: StoryPage,
+      },
+      {
+        path: "/write/:id/:name",
+        Component: WriterPage,
+      },
+      {
+        path: "/role/:id/:name/:text",
+        Component: RolePage,
+      },
+      {
+        path: "/role",
+        Component: RolePage,
+      },
+      {
+        path: "/test",
+        Component: TestPage,
+      },
+    ],
+  }
+]);
+
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <RouterProvider router={router} />,
 );
