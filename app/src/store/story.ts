@@ -1,4 +1,3 @@
-import { useEffect, useReducer } from 'react';
 import * as fs from '@tauri-apps/plugin-fs';
 import { invoke } from "@tauri-apps/api/core";
 import { open } from '@tauri-apps/plugin-dialog';
@@ -141,6 +140,7 @@ async function getAllContents(story: number, chapter: number) {
 export const useStoryStore = createStoreHook(storyReducer, initStoryState);
 
 const store = await load('store.json', { autoSave: false });
+console.log('store', store)
 
 export async function openStory(dispatch: any) {
   const file = await open({
@@ -236,10 +236,10 @@ export async function getContents(state:any, dispatch: any) {
   }
 }
 
-function deleteContent(id: number) {
-  invoke("delete_content", { id });
+// function deleteContent(id: number) {
+//   invoke("delete_content", { id });
   
-}
+// }
 
 export async function updateContent(data = '', state:any, dispatch: any) {
   const list = data.split('\n');

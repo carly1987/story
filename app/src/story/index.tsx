@@ -11,7 +11,7 @@ import StoryCard from './StoryCard';
 import {Story, useStoryStore} from '../store';
 
 export default function StoryPage() {
-  const {state, uploadStory, addStory} = useStoryStore();
+  const [state] = useStoryStore();
   const [open, setOpen] = React.useState(false);
   const handleClickOpen = () => {
     setOpen(true);
@@ -23,10 +23,10 @@ export default function StoryPage() {
 
   const doSaveStory = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const formJson = Object.fromEntries((formData as any).entries());
-    const name = formJson.name;
-    addStory(name);
+    // const formData = new FormData(event.currentTarget);
+    // const formJson = Object.fromEntries((formData as any).entries());
+    // const name = formJson.name;
+    // addStory(name);
     handleClose();
   }
 
@@ -36,7 +36,7 @@ export default function StoryPage() {
         <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
           所有书籍  
         </Typography>
-        <Button onClick={uploadStory}>导入小说</Button>
+        <Button>导入小说</Button>
         <Button variant="outlined" onClick={handleClickOpen}>
           创建小说
         </Button>

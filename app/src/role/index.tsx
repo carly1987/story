@@ -1,16 +1,14 @@
-import * as React from 'react';
 import { useParams } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
-import SidePane from '../layout/SidePane';
 import MenuPane from '../layout/MenuPane';
 import RootPane from '../layout/RootPane';
 import MainPane from '../layout/MainPane';
 import Menu from './Menu';
 
 export default function RolePage() {
-  const { id, name } = useParams();
+  const { name } = useParams();
   return (
     // @ts-ignore
     <RootPane>

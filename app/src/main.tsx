@@ -6,7 +6,6 @@ import {
 import WellcomePage from './wellcome';
 import StoryPage from './story';
 import WriterPage from './write';
-import TestPage from './test';
 import RolePage from './role';
 import Layout from './layout';
 import '@fontsource/roboto/300.css';
@@ -36,10 +35,6 @@ const router = createBrowserRouter([
       {
         path: "/role",
         Component: RolePage,
-      },
-      {
-        path: "/test",
-        Component: TestPage,
       },
     ],
   }

@@ -2,6 +2,7 @@ import path from 'path';
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import monacoEditorPlugin from 'vite-plugin-monaco-editor';
+import topLevelAwait from 'vite-plugin-top-level-await';
 
 const host = process.env.TAURI_DEV_HOST;
 
@@ -11,6 +12,10 @@ export default defineConfig(async () => ({
     react(),
     monacoEditorPlugin({
       languageWorkers:['editorWorkerService', 'json']
+    }),
+    topLevelAwait({
+      promiseExportName: '__tla',
+      promiseImportName: (i) => `__tla_${i}`
     })
   ],
   // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`

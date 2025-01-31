@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
-import {Button, Stack, Typography} from '@mui/material';
+import {Button} from '@mui/material';
 import * as fs from '@tauri-apps/plugin-fs';
 import * as dialog from '@tauri-apps/plugin-dialog';
 
