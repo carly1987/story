@@ -61,7 +61,7 @@ function ThemeNode({ data, id }: any) {
   return (
     <>
       <NodeToolbar
-        isVisible={internalNode?.selected && !internalNode?.dragging}
+        isVisible={internalNode && internalNode.selected && !internalNode.dragging}
         position={data.toolbarPosition}
       >
         <ToggleButtonGroup
@@ -80,7 +80,7 @@ function ThemeNode({ data, id }: any) {
       <Card variant="outlined" sx={{ maxWidth: 360, position: 'relative', borderColor: type === 'topic' ? 'primary.main' : null}}>
         <Box>
           {
-            internalNode?.selected && !internalNode?.dragging ? (
+            internalNode && internalNode.selected && !internalNode.dragging ? (
               <TextField
                 value={value}
                 onChange={doChangeLabel}

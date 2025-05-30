@@ -47,7 +47,7 @@ function CharacterNode({ data, id }: any) {
                 </Typography>
                 
         {
-              internalNode?.selected && !internalNode?.dragging ? (
+              internalNode && internalNode.selected && !internalNode.dragging ? (
                 <>
                   {
                     data.dataSource ? (
@@ -107,45 +107,3 @@ function CharacterNode({ data, id }: any) {
 }
 
 export default memo(CharacterNode);
-
-
-//<div style={{ width: '100%', height: '100%' }}>
- //     <svg width="100%" height="100%" viewBox="0 0 100 100">
- //       {/* 三角形路径 */}
-  //      <polygon
-  //        points="50,0 100,100 0,100"
-        //   fill="#6366f1"  // 填充色
-        //   stroke="#4338ca" // 边框色
-        //   strokeWidth="2"
-        // />
-        // {/* 文字 */}
-        // <text
-        //   x="50"
-        //   y="60"
-        //   fill="white"
-        //   textAnchor="middle"
-        //   dominantBaseline="middle"
-        //   fontSize="14"
-        // >
-          // {
-          //   internalNode.selected && !internalNode.dragging ? (
-          //     <TextField 
-          //       value={value}
-          //       onChange={doChangeLabel}
-          //       sx={{"position": "relative", "zIndex": '1', "width":"100px"}} />
-          //   ) : (
-          //     <Box>
-          //       <Typography
-          //         gutterBottom
-          //         variant="h5"
-          //         component="div"
-          //         sx={{ "position": "relative", "zIndex": '1' }}
-          //       >
-          //         {value}
-          //       </Typography>
-          //     </Box>
-          //   )
-          // }
-    //     </text>
-    //   </svg>
-    // </div>
