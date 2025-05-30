@@ -47,7 +47,7 @@ function CharacterNode({ data, id }: any) {
                 </Typography>
                 
         {
-              internalNode.selected && !internalNode.dragging ? (
+              internalNode?.selected && !internalNode?.dragging ? (
                 <>
                   {
                     data.dataSource ? (

@@ -22,6 +22,7 @@ import {
 import { TreeItem2Icon } from '@mui/x-tree-view/TreeItem2Icon';
 import { TreeItem2Provider } from '@mui/x-tree-view/TreeItem2Provider';
 import { useTheme } from '@mui/material/styles';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 // import { useStoryStore } from '../store';
 
 type Color = 'blue' | 'green';
@@ -103,7 +104,7 @@ const CustomTreeItem = React.forwardRef(function CustomTreeItem(
   } = useTreeItem2({ id, itemId, children, label,disabled, rootRef: ref });
 
   const item = publicAPI.getItem(itemId);
-  
+  console.log('status', status)
   const color = item?.color;
   return (
     <TreeItem2Provider itemId={(itemId).toString()}>
@@ -125,7 +126,11 @@ const CustomTreeItem = React.forwardRef(function CustomTreeItem(
           )}
           <Badge variant="dot" color="primary" invisible={!(status.selected && slots.needSave)}>
           <CustomLabel {...getLabelProps({ color })} isExists={item.isExists} showMore={!!slots.onMore} />
+          
           </Badge>
+          {
+            status.focused ? (<ContentCopyIcon color="action" fontSize="small" />) : null
+          }
           
         </TreeItem2Content>
        

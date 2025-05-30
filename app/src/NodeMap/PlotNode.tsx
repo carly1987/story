@@ -22,7 +22,7 @@ function PlotNode({ data, id }: any) {
       <Card variant="outlined" sx={{ maxWidth: 360, position: 'relative'}}>
         <Box>
           {
-            internalNode.selected && !internalNode.dragging ? (
+            internalNode?.selected && !internalNode?.dragging ? (
               <TextField
                 value={value}
                 multiline

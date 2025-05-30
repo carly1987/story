@@ -147,11 +147,11 @@ function RoleNode({ data, id }: NodeProps) {
   }
 
   useEffect(() => {
-    if (internalNode.selected) {
+    if (internalNode?.selected) {
 
-      setType(internalNode.data.type);
+      setType(internalNode?.data.type);
     }
-  }, [internalNode.selected]);
+  }, [internalNode?.selected]);
 
   useEffect(() => {
     setNodes((nodes) => nodes.map((node) => node.id === id ? {
@@ -163,7 +163,7 @@ function RoleNode({ data, id }: NodeProps) {
   return (
     <>
       <NodeToolbar
-        isVisible={internalNode.selected && !internalNode.dragging}
+        isVisible={internalNode?.selected && !internalNode?.dragging}
         position={data.toolbarPosition as any}
       >
         <ToggleButtonGroup
@@ -182,7 +182,7 @@ function RoleNode({ data, id }: NodeProps) {
       <Card variant="outlined" sx={{ maxWidth: 360, borderColor: roleColor, position: 'relative' }}>
         <Box>
           {
-            internalNode.selected && !internalNode.dragging ? (
+            internalNode?.selected && !internalNode?.dragging ? (
               // <TextField 
               //   value={value}
               //   onChange={doChangeLabel}
@@ -225,7 +225,7 @@ function RoleNode({ data, id }: NodeProps) {
 
         </Box>
         {
-          internalNode.selected && !internalNode.dragging ? (
+          internalNode?.selected && !internalNode?.dragging ? (
             <>
               <Divider sx={{ mb: 1 }} />
               <Box sx={{ "position": "relative", "zIndex": '1' }}>
