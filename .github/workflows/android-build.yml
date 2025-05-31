@@ -45,10 +45,7 @@ jobs:
       run: |
         cd app/src-tauri
         cargo update -p tao
-    - name: Debug OpenSSL paths
-      run: |
-        echo "===== /home 目录结构 ====="
-        ls -l /home/runner/work/story/story/app/src-tauri/target/release/build/
+    
     - name: Install OpenSSL and dependencies
       run: |
         sudo apt-get update
@@ -61,6 +58,10 @@ jobs:
         ls -l /usr/lib/x86_64-linux-gnu/libssl.so*
         echo "===== pkg-config 输出 ====="
         pkg-config --modversion openssl
+    - name: Debug OpenSSL paths
+      run: |
+        echo "===== /home 目录结构 ====="
+        ls -l /home/runner/work/story/story/app/src-tauri/target/release/build/
     - name: Build apk
       run: |
         cd app
