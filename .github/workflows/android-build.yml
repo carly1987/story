@@ -53,6 +53,14 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y libssl-dev pkg-config
+    - name: Verify OpenSSL installation
+      run: |
+        echo "===== OpenSSL 头文件 ====="
+        ls -l /usr/include/openssl/ssl.h
+        echo "===== OpenSSL 库文件 ====="
+        ls -l /usr/lib/x86_64-linux-gnu/libssl.so*
+        echo "===== pkg-config 输出 ====="
+        pkg-config --modversion openssl
     - name: Build apk
       run: |
         cd app
@@ -60,9 +68,10 @@ jobs:
         export ANDROID_HOME='/usr/local/lib/android/sdk'
         export NDK_HOME="$ANDROID_HOME/ndk/$(ls -d $ANDROID_HOME/ndk/* | sort -V | tail -n 1 | xargs basename)"
         # 设置 OpenSSL 环境变量
-        export OPENSSL_DIR=/usr
+        export OPENSSL_DIR=/usr/lib/ssl
         export OPENSSL_LIB_DIR=/usr/lib/x86_64-linux-gnu
-        export OPENSSL_INCLUDE_DIR=/usr/include/openssl
+        export OPENSSL_INCLUDE_DIR=/usr/include
+        export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig
         yarn android-init
         NODE_OPTIONS="--max-old-space-size=4096" yarn android-build
     - name: Align apk
