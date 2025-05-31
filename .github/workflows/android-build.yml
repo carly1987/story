@@ -50,14 +50,6 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y libssl-dev pkg-config
-    - name: Verify OpenSSL installation
-      run: |
-        echo "===== OpenSSL 头文件 ====="
-        ls -l /usr/include/openssl/ssl.h
-        echo "===== OpenSSL 库文件 ====="
-        ls -l /usr/lib/x86_64-linux-gnu/libssl.so*
-        echo "===== pkg-config 输出 ====="
-        pkg-config --modversion openssl
     - name: Debug OpenSSL paths
       run: |
         echo "===== /home 目录结构 ====="
