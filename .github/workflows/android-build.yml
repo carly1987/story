@@ -61,7 +61,7 @@ jobs:
     - name: Debug OpenSSL paths
       run: |
         echo "===== /home 目录结构 ====="
-        ls -l /home/runner/work/story/story/app/src-tauri/target/release/build/
+        ls -l /home/runner/work/story/story/
     - name: Build apk
       run: |
         cd app
