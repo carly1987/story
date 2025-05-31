@@ -47,8 +47,8 @@ jobs:
         cargo update -p tao
     - name: Debug OpenSSL paths
       run: |
-        echo "===== /usr 目录结构 ====="
-        ls -l /usr/
+        echo "===== /home 目录结构 ====="
+        ls -l /home/
     - name: Install OpenSSL and dependencies
       run: |
         sudo apt-get update
