@@ -76,9 +76,7 @@ jobs:
         export PKG_CONFIG_ALLOW_CROSS=1
         export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig
         
-        # 确保路径存在
-        ls -l $OPENSSL_LIB_DIR/libssl.so*
-        ls -l $OPENSSL_INCLUDE_DIR/ssl.h
+        
         yarn android-init
         NODE_OPTIONS="--max-old-space-size=4096" yarn android-build
     - name: Align apk
