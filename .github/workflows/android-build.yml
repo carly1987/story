@@ -4,7 +4,7 @@ on: workflow_dispatch
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v4
@@ -45,12 +45,24 @@ jobs:
       run: |
         cd app/src-tauri
         cargo update -p tao
+    - name: Debug OpenSSL paths
+      run: |
+        echo "===== /usr 目录结构 ====="
+        ls -l /usr/
+    - name: Install OpenSSL and dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libssl-dev pkg-config
     - name: Build apk
       run: |
         cd app
         export JAVA_HOME='/opt/hostedtoolcache/Java_Adopt_jdk/17.0.10-7/x64'
         export ANDROID_HOME='/usr/local/lib/android/sdk'
         export NDK_HOME="$ANDROID_HOME/ndk/$(ls -d $ANDROID_HOME/ndk/* | sort -V | tail -n 1 | xargs basename)"
+        # 设置 OpenSSL 环境变量
+        export OPENSSL_DIR=/usr
+        export OPENSSL_LIB_DIR=/usr/lib/x86_64-linux-gnu
+        export OPENSSL_INCLUDE_DIR=/usr/include/openssl
         yarn android-init
         NODE_OPTIONS="--max-old-space-size=4096" yarn android-build
     - name: Align apk
@@ -59,7 +71,7 @@ jobs:
         export ANDROID_HOME='/usr/local/lib/android/sdk'
         ls $ANDROID_HOME
         ls $ANDROID_HOME/build-tools
-        $ANDROID_HOME/build-tools/31.0.0/zipalign -v 4 /home/runner/work/story/story/app/src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release-unsigned.apk /home/runner/work/story/story/app/src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release-unsigned-aligned.apk
+        $ANDROID_HOME/build-tools/31.0.0/zipalign -v 4 /home/runner/work/story/app/src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release-unsigned.apk /home/runner/work/story/app/src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release-unsigned-aligned.apk
     - name: Decode keystore
       run: |
         echo ${{ secrets.KEYSTORE_BASE64 }} | base64 --decode > ./my-release-key.jks
@@ -71,12 +83,12 @@ jobs:
                                                        --ks-pass env:KEYSTORE_PASSWORD \
                                                        --key-pass env:KEY_PASSWORD \
                                                        --ks-key-alias "${{ secrets.KEY_ALIAS }}" \
-                                                       --out /home/runner/work/story/story/app/src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release-unsigned.apk \
-                                                       /home/runner/work/story/story/app/src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release-unsigned.apk
+                                                       --out /home/runner/work/story/app/src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release-unsigned.apk \
+                                                       /home/runner/work/story/app/src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release-unsigned.apk
       env:
         KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
         KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
     - uses: actions/upload-artifact@v4
       with:
         name: app-universal-release-unsigned
-        path: /home/runner/work/story/story/app/src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release-unsigned.apk
+        path: /home/runner/work/story/app/src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release-unsigned.apk
