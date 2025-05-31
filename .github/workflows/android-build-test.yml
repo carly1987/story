@@ -45,12 +45,20 @@ jobs:
       run: |
         cd app/src-tauri
         cargo update -p tao
+    - name: Install OpenSSL and dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libssl-dev pkg-config
     - name: Build apk
       run: |
         cd app
         export JAVA_HOME='/opt/hostedtoolcache/Java_Adopt_jdk/17.0.10-7/x64'
         export ANDROID_HOME='/usr/local/lib/android/sdk'
         export NDK_HOME="$ANDROID_HOME/ndk/$(ls -d $ANDROID_HOME/ndk/* | sort -V | tail -n 1 | xargs basename)"
+        # 设置 OpenSSL 环境变量
+        export OPENSSL_DIR=/usr
+        export OPENSSL_LIB_DIR=/usr/lib/x86_64-linux-gnu
+        export OPENSSL_INCLUDE_DIR=/usr/include/openssl
         yarn android-init
         NODE_OPTIONS="--max-old-space-size=4096" yarn android-build
     - name: Align apk
