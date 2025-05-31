@@ -48,7 +48,18 @@ jobs:
     
     - name: Install specific OpenSSL version
       run: |
-        sudo apt-get install -y libssl1.1 libssl-dev=1.1.1*
+        # 添加旧版软件源
+        echo "deb http://security.ubuntu.com/ubuntu focal-security main" | sudo tee /etc/apt/sources.list.d/focal-security.list
+        sudo apt-get update
+        
+        # 精确版本安装
+        sudo apt-get install -y libssl1.1=1.1.1f-1ubuntu2.19 libssl-dev=1.1.1f-1ubuntu2.19
+        
+        # 验证安装
+        echo "===== 安装的 OpenSSL 版本 ====="
+        dpkg -l | grep libssl
+        
+        # 符号链接
         sudo ln -sf /usr/lib/x86_64-linux-gnu/libssl.so.1.1 /usr/lib/x86_64-linux-gnu/libssl.so
         sudo ln -sf /usr/lib/x86_64-linux-gnu/libcrypto.so.1.1 /usr/lib/x86_64-linux-gnu/libcrypto.so
     - name: Debug OpenSSL paths
