@@ -48,7 +48,7 @@ jobs:
     - name: Debug OpenSSL paths
       run: |
         echo "===== /home 目录结构 ====="
-        ls -l /home/
+        ls -l /home/runner/work/
     - name: Install OpenSSL and dependencies
       run: |
         sudo apt-get update
