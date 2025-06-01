@@ -4,7 +4,7 @@ on: workflow_dispatch
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v4
@@ -45,49 +45,12 @@ jobs:
       run: |
         cd app/src-tauri
         cargo update -p tao
-    
-    - name: Install specific OpenSSL version
-      run: |
-        # 下载 libssl1.1 和 libssl-dev（Ubuntu 20.04 版本）
-        wget http://security.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.19_amd64.deb
-        wget http://security.ubuntu.com/ubuntu/pool/main/o/openssl/libssl-dev_1.1.1f-1ubuntu2.19_amd64.deb
-        
-        # 安装
-        sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2.19_amd64.deb
-        sudo dpkg -i libssl-dev_1.1.1f-1ubuntu2.19_amd64.deb
-        
-        # 修复依赖
-        sudo apt-get install -f
-        
-        # 验证
-        dpkg -l | grep libssl
-    - name: Debug OpenSSL paths
-      run: |
-        echo "===== /home 目录结构 ====="
-        ls -l /home/runner/work/story/story/
-    - name: Set OpenSSL vendored flag
-      run: |
-        echo "OPENSSL_NO_VENDOR=0" >> $GITHUB_ENV
-        echo "OPENSSL_STATIC=1" >> $GITHUB_ENV
-    - name: Clean Rust cache
-      run: |
-        cd app/src-tauri
-        cargo clean
-        rm -rf ~/.cargo/registry
     - name: Build apk
       run: |
         cd app
         export JAVA_HOME='/opt/hostedtoolcache/Java_Adopt_jdk/17.0.10-7/x64'
         export ANDROID_HOME='/usr/local/lib/android/sdk'
         export NDK_HOME="$ANDROID_HOME/ndk/$(ls -d $ANDROID_HOME/ndk/* | sort -V | tail -n 1 | xargs basename)"
-        # 精确路径设置
-        export OPENSSL_DIR=/usr
-        export OPENSSL_LIB_DIR=$(dirname $(readlink -f $(which openssl)))/../lib
-        export OPENSSL_INCLUDE_DIR=/usr/include/openssl
-        export PKG_CONFIG_ALLOW_CROSS=1
-        export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig
-        
-        
         yarn android-init
         NODE_OPTIONS="--max-old-space-size=4096" yarn android-build
     - name: Align apk
