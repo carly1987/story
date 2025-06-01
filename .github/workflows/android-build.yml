@@ -48,20 +48,19 @@ jobs:
     
     - name: Install specific OpenSSL version
       run: |
-        # 添加旧版软件源
-        echo "deb http://security.ubuntu.com/ubuntu focal-security main" | sudo tee /etc/apt/sources.list.d/focal-security.list
-        sudo apt-get update
+        # 下载 libssl1.1 和 libssl-dev（Ubuntu 20.04 版本）
+        wget http://security.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.19_amd64.deb
+        wget http://security.ubuntu.com/ubuntu/pool/main/o/openssl/libssl-dev_1.1.1f-1ubuntu2.19_amd64.deb
         
-        # 精确版本安装
-        sudo apt-get install -y libssl1.1=1.1.1f-1ubuntu2.19 libssl-dev=1.1.1f-1ubuntu2.19
+        # 安装
+        sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2.19_amd64.deb
+        sudo dpkg -i libssl-dev_1.1.1f-1ubuntu2.19_amd64.deb
         
-        # 验证安装
-        echo "===== 安装的 OpenSSL 版本 ====="
+        # 修复依赖
+        sudo apt-get install -f
+        
+        # 验证
         dpkg -l | grep libssl
-        
-        # 符号链接
-        sudo ln -sf /usr/lib/x86_64-linux-gnu/libssl.so.1.1 /usr/lib/x86_64-linux-gnu/libssl.so
-        sudo ln -sf /usr/lib/x86_64-linux-gnu/libcrypto.so.1.1 /usr/lib/x86_64-linux-gnu/libcrypto.so
     - name: Debug OpenSSL paths
       run: |
         echo "===== /home 目录结构 ====="
