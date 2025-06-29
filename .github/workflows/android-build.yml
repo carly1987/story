@@ -70,16 +70,11 @@ jobs:
         chmod +x ./scripts/build-openssl-android.sh
     - name: Configure OpenSSL for Android
       run: |
-        # 确保 NDK 路径正确设置
+        # 确保 NDK 路径正确
         NDK_PATH="$ANDROID_HOME/ndk/$(ls -d $ANDROID_HOME/ndk/* | sort -V | tail -n 1 | xargs basename)"
         echo "NDK_HOME=${NDK_PATH}" >> $GITHUB_ENV
         echo "ANDROID_NDK_HOME=${NDK_PATH}" >> $GITHUB_ENV
-        
-        # 验证 NDK 安装
-        echo "=== NDK Verification ==="
-        echo "NDK Path: ${NDK_PATH}"
-        ls -la "${NDK_PATH}/toolchains/llvm/prebuilt/linux-x86_64/bin/"
-        
+
         # 安装必要工具
         sudo apt-get update -y
         sudo apt-get install -y \
@@ -91,55 +86,48 @@ jobs:
           g++ \
           perl \
           python3
-        
-        # 创建构建目录
+
+        # 下载并解压 OpenSSL
         mkdir -p openssl-build
         cd openssl-build
-        
-        # 下载 OpenSSL
-        for mirror in \
-          https://mirrors.tencent.com/openssl/source/openssl-1.1.1w.tar.gz \
-          https://mirrors.tuna.tsinghua.edu.cn/openssl/source/openssl-1.1.1w.tar.gz \
-          https://mirrors.ustc.edu.cn/openssl/source/openssl-1.1.1w.tar.gz \
-          https://www.openssl.org/source/openssl-1.1.1w.tar.gz
-        do
-          if wget --tries=3 --timeout=30 -O openssl.tar.gz "${mirror}"; then
-            break
-          fi
-        done
-        
+        wget https://www.openssl.org/source/openssl-1.1.1w.tar.gz -O openssl.tar.gz || \
+        wget https://mirrors.tuna.tsinghua.edu.cn/openssl/source/openssl-1.1.1w.tar.gz -O openssl.tar.gz
         tar xzf openssl.tar.gz
         cd openssl-1.1.1w
-        
-        # 设置环境变量（关键修复）
+
+        # 设置 NDK 工具链路径（关键修复）
         export ANDROID_NDK_HOME="${NDK_PATH}"
         export PATH="${NDK_PATH}/toolchains/llvm/prebuilt/linux-x86_64/bin:${PATH}"
-        
-        # 为所有Android目标构建
+
+        # 为所有 Android 目标构建
         for arch in arm64 arm x86 x86_64; do
           case ${arch} in
             arm64)
               target="aarch64-linux-android"
               api="21"
+              openssl_arch="android-arm64"
               ;;
             arm)
               target="armv7-linux-androideabi"
               api="21"
+              openssl_arch="android-arm"
               ;;
             x86)
               target="i686-linux-android"
               api="21"
+              openssl_arch="android-x86"
               ;;
             x86_64)
               target="x86_64-linux-android"
               api="21"
+              openssl_arch="android-x86_64"
               ;;
           esac
-          
-          echo "Building for ${target}"
-          
-          make clean
-          ./Configure "android-${arch}" \
+
+          echo "Building for ${target} (${openssl_arch})"
+
+          # 先运行 Configure 生成 Makefile（关键步骤）
+          ./Configure ${openssl_arch} \
             -D__ANDROID_API__=${api} \
             --prefix="${PWD}/../openssl-${arch}" \
             no-shared \
@@ -147,18 +135,22 @@ jobs:
             no-comp \
             no-hw \
             no-engine
-          
+
+          # 再执行 make
           make -j$(nproc)
           make install
+
+          # 清理（可选）
+          make distclean
         done
-        
-        # 合并所有架构
+
+        # 合并所有架构的库
         mkdir -p "${GITHUB_WORKSPACE}/openssl-install"
         find .. -name "openssl-*" -type d | while read -r dir; do
           cp -r "${dir}/include" "${GITHUB_WORKSPACE}/openssl-install/" || true
           cp -r "${dir}/lib" "${GITHUB_WORKSPACE}/openssl-install/" || true
         done
-        
+
         echo "OPENSSL_DIR=${GITHUB_WORKSPACE}/openssl-install" >> $GITHUB_ENV
         echo "OPENSSL_STATIC=1" >> $GITHUB_ENV
     - name: Debug OpenSSL Build
